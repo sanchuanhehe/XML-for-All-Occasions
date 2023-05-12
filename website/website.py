@@ -1,14 +1,9 @@
-'''
-我将课本上的代码添加了详细的注释，以便于理解
-'''
-
-# 导入必要的模块和类
-from xml.sax.handler import ContentHandler
-from xml.sax import parse
-import os
+from xml.sax.handler import ContentHandler#ContentHandler 类是 SAX 应用程序的主要接口，它负责处理 SAX 事件。ContentHandler 接口必须由应用程序实现。
+from xml.sax import parse#parse() 函数解析一个 XML 文档，第一个参数是文件名或类文件对象，第二个参数是 ContentHandler 类的实例。
+import os#os 模块提供了非常丰富的方法用来处理文件和目录
 
 
-# 创建一个分配器类
+# 创建一个分配器类,分配器类继承自ContentHandler类，用于分配方法调用，根据节点名调用相应的方法，如果没有相应的方法则调用默认的方法，如果没有默认的方法则不做任何处理，这样就可以只实现需要的方法，而不用实现所有的方法
 class Dispatcher:
     def dispatch(self, prefix, name, attrs=None):
         # 生成一个方法名
@@ -18,8 +13,8 @@ class Dispatcher:
         # 尝试获取方法
         method = getattr(self, mname, None)
         # 如果方法可调用
-        if callable(method):
-            args = ()
+        if callable(method):#callable() 函数用于检查一个对象是否是可调用的。如果返回 True，object 仍然可能调用失败；但如果返回 False，调用对象 object 绝对不会成功。
+            args = ()# 设置参数为空
         else:
             # 尝试获取默认方法
             method = getattr(self, dname, None)
@@ -31,10 +26,10 @@ class Dispatcher:
         # 如果方法可调用
         if callable(method):
             # 调用方法
-            method(*args)
+            method(*args)#*args 表示将参数打包成tuple给函数体调用
 
     # 定义起始节点方法
-    def startElement(self, name, attrs):
+    def startElement(self, name, attrs):#attrs是一个字典,包含节点的属性,键是属性名,值是属性值
         # 分配方法调用
         self.dispatch('start', name, attrs)
 
@@ -50,10 +45,12 @@ class WebsiteConstructor(Dispatcher, ContentHandler):
     # 是否直接输出节点及其内容
     passthrough = False
 
+    #os.makedirs() 方法用于递归创建目录。像 mkdir(), 但创建的所有intermediate-level文件夹需要包含子文件夹。
+
     # 初始化方法，传入目录路径
     def __init__(self, directory):
         # 设置目录列表
-        self.directory = [directory]
+        self.directory = [directory]#directory是一个列表,包含了目录的路径
         # 确保目录存在
         self.ensureDirectory()
 
